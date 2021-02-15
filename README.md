@@ -80,6 +80,6 @@
             location /media/ {
                 root /<путь до проекта>/finalproject;
             }
-        }
+          }
     - для применения новых настроек: sudo nginx -s reload
     - для перезапуска nginx: sudo service nginx restart
