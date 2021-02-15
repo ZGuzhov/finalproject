@@ -50,21 +50,21 @@
 - установить зависимости: pip install -r requirements.txt 
 - скопировать статические файлы в рабочую папку: python manage.py collectstatic
 - установить и настроить PostgreSQL:
-    установка PostgreSQL: sudo apt install postgresql postgresql-contrib
-    войти в консоль postgres: sudo -u postgres psql
-    создать базу данных и пользователя:
-        CREATE DATABASE fp_db;
-        CREATE USER admin WITH PASSWORD '912873';
-    дать все разрешения пользователю admin для взаимодействия с базой fp_db: GRANT ALL PRIVILEGES ON DATABASE fp_db TO admin;
-    примечание: в моём случае база данных использует порт 5433, так как 5432 был занят другой базой, поэтому установите нужный порт в файле settings.py
+    - установка PostgreSQL: sudo apt install postgresql postgresql-contrib
+    - войти в консоль postgres: sudo -u postgres psql
+    - создать базу данных и пользователя:
+        - CREATE DATABASE fp_db;
+        - CREATE USER admin WITH PASSWORD '912873';
+    - дать все разрешения пользователю admin для взаимодействия с базой fp_db: GRANT ALL PRIVILEGES ON DATABASE fp_db TO admin;
+    - примечание: в моём случае база данных использует порт 5433, так как 5432 был занят другой базой, поэтому установите нужный порт в файле settings.py
 - выполнить миграции:
-    python manage.py makemigrations
-    python manage.py migrate
+    - python manage.py makemigrations
+    - python manage.py migrate
 - создать суперпользователя: python manage.py createsuperuser
 - запустить сервер: python manage.py runserver
 - если сайт должен быть доступен в интернете, то необходимо установить и настроить Nginx:
-    установка: sudo apt install nginx
-    в папки /etc/nginx/sites-available/ и /etc/nginx/sites-enabled/ необходимо поместить файл настроек:
+    - установка: sudo apt install nginx
+    - в папки /etc/nginx/sites-available/ и /etc/nginx/sites-enabled/ необходимо поместить файл настроек:
         server {
             listen 80;
             server_name <ip адрес вашего сервера или url>;
@@ -81,5 +81,5 @@
                 root /<путь до проекта>/finalproject;
             }
         }
-    для применения новых настроек: sudo nginx -s reload
-    для перезапуска nginx: sudo service nginx restart
+    - для применения новых настроек: sudo nginx -s reload
+    - для перезапуска nginx: sudo service nginx restart
