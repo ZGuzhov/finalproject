@@ -65,21 +65,23 @@
 - если сайт должен быть доступен в интернете, то необходимо установить и настроить Nginx:
     - установка: sudo apt install nginx
     - в папки /etc/nginx/sites-available/ и /etc/nginx/sites-enabled/ необходимо поместить файл настроек:
-        server {
-            listen 80;
-            server_name <ip адрес вашего сервера или url>;
+        
+            server {
+                listen 80;
+                server_name <ip адрес вашего сервера или url>;
 
-            location / {
-                proxy_pass http://<ip адрес вашего сервера>:8000;
-            }
+                location / {
+                    proxy_pass http://<ip адрес вашего сервера>:8000;
+                }
 
-            location /static/ {
-                root /<путь до проекта>/finalproject;
-            }
+                location /static/ {
+                    root /<путь до проекта>/finalproject;
+                }
 
-            location /media/ {
-                root /<путь до проекта>/finalproject;
+                location /media/ {
+                    root /<путь до проекта>/finalproject;
+                }
             }
-          }
+    
     - для применения новых настроек: sudo nginx -s reload
     - для перезапуска nginx: sudo service nginx restart
