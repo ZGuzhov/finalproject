@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_title %}Описание, иструкции.{% endblock %}
+
+{% block content %}
+  <div class="container my-5 z-depth-1">
+    <section class="dark-grey-text">
+      <div class="row pr-lg-5">
+        <div class="col-md-7 mb-4">
+          <div class="view">
+            <img src="{% static 'img\polls.jpg' %}" class="img-fluid" alt="smaple image">
+          </div>
+        </div>
+        <div class="col-md-5 d-flex align-items-center my-3">
+          <div class="text-center">
+            <h3 class="font-weight-bold mb-4">Портал опросов</h3>
+            <p align="justify">Уважаемый пользователь, Вам предлагается пройти ряд опросов. Одни вопросы имеют несколько ответов, другие только один. 
+              Каждый ответ имеет определённое количество баллов, причём даже один вопрос в разных опросах может иметь разное количество баллов. 
+              После ответов Вы можете посмотреть статистику прохождения опросов и сравнение с другими пользователями. 
+              Имейте ввиду, что все вопросы, ответы и баллы полностью вымышлены, так что не надо искать в них какой-то смысл. Удачи в прохождении!</p>
+            <a type="button" class="btn btn-orange btn-rounded mx-0" href="
+              {% if username %}
+                /polls-list/all/
+              {% else %}
+                /login/
+              {% endif %}
+            ">Опросы</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endblock %}

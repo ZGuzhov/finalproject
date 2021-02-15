@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_title %}Список опросов.{% endblock %}
+
+{% block content %}
+  <div class="container my-5">
+    <section>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="text-center font-weight-bold mb-4">{{ poll_title }}</h5>
+          <hr>
+          <div class="row">
+            <div class="col-12 mb-3 mx-auto">
+              {% if q_in_p %}
+                {% for q in q_in_p %}
+                  <div class="media" id="q-{{ q.question.id }}">
+                    {% if q.question.image %}
+                      <img class="d-flex mr-3" width="70" src="{{ q.question.image.url }}" alt="Изображение">
+                    {% else %}
+                      <img class="d-flex mr-3" width="70" src="{% static 'img\no-image.jpg' %}" alt="Нет изображения">
+                    {% endif %}
+                    <div class="media-body">
+                      <h6 class="mt-1 font-weight-bold">{{ q.question.title }}
+                        {% if q.question.id in answered_questions %}
+                          {% for key, value in question_points.items %}
+                            {% if key == q.id %}
+                              <span class="alert alert-success float-right py-1" role="alert">Набрано баллов: {{ value }}</span>
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                      </h6>
+                      <div class="container my-5">
+                        <div class="row">
+                          <div class="col-12">
+                            <form class="card card-list" id="id-{{ q.question.id }}" action="/answers/{{ poll_id }}/{{ q.id }}/0/">
+                              <script>
+                                const form_{{ q.question.id }} = document.getElementById("id-{{ q.question.id }}");
+                              </script>
+                              <div class="card-body ml-4">
+                                <ul class="list-unstyled mb-0">
+                                  {% if answers %}
+                                    {% for a in answers %}
+                                      {% if a.question_id == q.question.id %}
+                                        <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                          <div class="d-inline-flex">
+                                            {% if q.question.mode == 2 %}
+                                              <div class="form-check pl-0">
+                                                {% if q.question.id in answered_questions %}  
+                                                  {% if a.id in checked_answers %}  
+                                                    <input type="checkbox" class="form-check-input" id="Checked{{ a.id }}" name="{{ a.id }}" checked disabled> 
+                                                  {% else %}
+                                                    <input type="checkbox" class="form-check-input" id="Checked{{ a.id }}" name="{{ a.id }}" disabled> 
+                                                  {% endif %}
+                                                {% else %}
+                                                  <input type="checkbox" class="form-check-input" id="Checked{{ a.id }}" name="{{ a.id }}">
+                                                {% endif %}
+                                                <label class="form-check-label" for="Checked{{ a.id }}"></label>
+                                              </div>
+                                            {% else %}
+                                              <div class="custom-control custom-radio pl-0">
+                                                {% if q.question.id in answered_questions %}
+                                                  {% if a.id in checked_answers %}
+                                                    <input type="radio" class="custom-control-input" id="Radio_{{ a.id }}" name="Radios" value="{{ a.id }}" checked disabled>
+                                                  {% else %}
+                                                    <input type="radio" class="custom-control-input" id="Radio_{{ a.id }}" name="Radios" value="{{ a.id }}" disabled>
+                                                  {% endif %}
+                                                {% else %}
+                                                  <input type="radio" class="custom-control-input" id="Radio_{{ a.id }}" name="Radios" value="{{ a.id }}">
+                                                {% endif %}
+                                                <label class="custom-control-label" for="Radio_{{ a.id }}"></label>
+                                              </div>
+                                              <script>
+                                                const radio_{{ a.id }} = document.getElementById("Radio_{{ a.id }}");
+
+                                                radio_{{ a.id }}.onclick = () => {
+                                                  form_{{ q.question.id }}.setAttribute("action","/answers/{{ poll_id }}/{{ q.id }}/{{ a.id }}/");
+                                                }
+                                              </script>
+                                            {% endif %}
+                                            <p class="mb-0"><span class="text">{{ a.title }}</span></p>
+                                          </div>
+                                        </li>
+                                      {% endif %}
+                                    {% endfor %}
+                                  {% endif %}
+                                </ul>
+                              </div>
+                              <div class="card-footer white py-3">
+                                <div class="text-center">
+                                  {% if q.question.id in answered_questions %}
+                                    <button type="submit" class="btn btn-primary btn-md px-3 my-0 mr-0" disabled>Ответить</button>
+                                  {% else %}
+                                    <button type="submit" class="btn btn-primary btn-md px-3 my-0 mr-0">Ответить</button>
+                                  {% endif %}
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                  <hr>
+                {% endfor %}
+              {% else %}
+                <div class="media">
+                  <div class="media-body">
+                    <h2 class="text-muted text-center">Опрос не готов, попробуйте зайти позже.</h2>
+                  </div>
+                </div>
+                <hr>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    // возвращаю скролл окна к вопросу, на который был дан ответ
+    const el = document.getElementById('q-{{ scroll_id }}');
+    if (el) {
+      el.scrollIntoView();
+      window.scrollBy(0,-100)
+    };
+  </script>
+{% endblock %}

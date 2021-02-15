@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_title %}Регистрация нового пользователя.{% endblock %}
+
+{% block content %}
+  <div class="container my-5 px-0 z-depth-1">
+    <section class="p-5 my-md-5 text-center">
+      <div class="my-5 mx-md-5">
+        <div class="row">
+          <div class="col-md-6 mx-auto">
+            <div class="card">
+              <div class="card-body">
+                <form class="text-left" style="color: #757575;" action="/signup/">
+                <!-- <form class="text-left" style="color: #757575;" method="POST"> -->
+                  <!-- {% csrf_token %} -->
+                  <h3 class="font-weight-bold my-4 pb-2 text-center dark-grey-text">Новый пользователь</h3>
+                  <!-- {{ form.as_p }} -->
+                  <input type="text" name="username" maxlength="150" autocapitalize="none" autocomplete="username" autofocus="" required="" 
+                    id="id_username" class="form-control mb-4" placeholder="Имя пользователя" value="{{ username_input }}">
+                  <input type="password" name="password1" autocomplete="new-password" required="" id="id_password1" class="form-control mb-4" placeholder="Пароль">
+                  <input type="password" name="password2" autocomplete="new-password" required="" id="id_password2" class="form-control" placeholder="Подтверждение пароля">
+                  {% if error %}
+                    <p class="lead text-center red-text text-muted pt-2 mt-2 mb-2 error">{{ error }}</p>
+                  {% endif %}
+                  <div class="text-center">
+                    <button type="submit" class="btn btn-outline-orange btn-rounded my-4 waves-effect">Создать</button> 
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endblock %}

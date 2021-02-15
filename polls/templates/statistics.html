@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_title %}Статистика.{% endblock %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-md-center">
+      <div class="col">
+        {% if n_polls != 0 %}
+          {% if staff %}
+            <form class="text-center mb-5" action="/statistics/">
+              Выберите пользователя для просмотра статистики: 
+              <select name="user_choice" class="browser-default custom-select" style="max-width: 250px;">
+                {% for u in users_list %}
+                  {% if u == user_choice %}
+                    <option selected>{{ u }}</option>
+                  {% else %}
+                    <option>{{ u }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+              <button type="submit" class="btn btn-primary btn-md px-3 my-0 mr-0">Выбрать</button>
+            </form>
+          {% endif %}
+          <div class="alert alert-secondary text-center" role="alert">Всего опросов: {{ n_polls }}</div>
+          <div class="progress mb-5" style="height: 50px;">
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{ percent_checked }}%" aria-valuenow="{{ n_polls_checked }}" aria-valuemin="0" aria-valuemax="{{ n_polls }}">
+              Пройденных: {{ n_polls_checked }}
+            </div>
+            <div class="progress-bar bg-info" role="progressbar" style="width: {{ percent_av }}%" aria-valuenow="n_polls_av" aria-valuemin="0" aria-valuemax="{{ n_polls }}">
+              Доступных: {{ n_polls_av }}
+            </div>
+            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ percent_not_av }}%" aria-valuenow="n_polls_not_av" aria-valuemin="0" aria-valuemax="{{ n_polls }}">
+              Недоступных: {{ n_polls_not_av }}
+            </div>
+          </div>
+          {% if n_polls_checked > 0 %}
+            <div class="card card-list mb-5">
+              <div class="card-header white d-flex justify-content-between align-items-center py-3">
+                <p class="h5-responsive font-weight-bold mb-0">Баллы пользователя "{{ user_choice }}" и сравнение с другими пользователями</p>
+              </div>
+              <div class="card-body">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="text-center">Опрос</th>
+                      <th scope="col" class="text-center">Ваши баллы</th>
+                      <th scope="col" class="text-center">Худший результат</th>
+                      <th scope="col" class="text-center">Лучший результат</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for key, value in polls_stat.items %}
+                      <tr>
+                        <th scope="row">{{ key }}</th>
+                        {% if value.0 == value.2 %}
+                          <td class="text-center text-success font-weight-bold">{{ value.0 }}</td>
+                        {% elif value.0 == value.1 %}
+                          <td class="text-center text-danger font-weight-bold">{{ value.0 }}</td>
+                        {% else %}
+                          <td class="text-center">{{ value.0 }}</td>
+                        {% endif %}
+                        <td class="text-center">{{ value.1 }}</td>
+                        <td class="text-center">{{ value.2 }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-body">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="text-center">Место</th>
+                      <th scope="col" class="text-center">Имя пользователя</th>
+                      <th scope="col" class="text-center">Набранные баллы</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for key, value in users_points_sorted.items %}
+                      <tr>
+                        <th class="text-center">{{ forloop.counter }}</th>
+                        <td class="text-center">{{ key }}</td>
+                        <td class="text-center">{{ value }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <div class="card card-list mb-5">
+              <div class="card-header white d-flex justify-content-between align-items-center py-3">
+                <p class="h5-responsive font-weight-bold mb-0">Ответы в завершённых опросах пользователя "{{ user_choice }}"</p>
+              </div>
+              <div class="card-body">
+                {% for p in polls %}
+                  <h4 class="font-weight-bold mb-3"><strong>{{ p.title }}</strong></h4>
+                  <p class="dark-grey-text">Описание: {{ p.description }}</p>
+                  {% for q_key, q_value in q_in_p_dict.items %}
+                    {% if q_key == p.id %}
+                      {% for q in q_value %}
+                        <p class="dark-grey-text font-weight-bold ml-3">&#9989; Вопрос: {{ q.question.title }}</p>
+                        {% for a_key, a_value in answers_selected_dict.items %}
+                          {% if a_key == p.id %}
+                            {% for a in a_value %}
+                              {% if a.question.id == q.question.id %}
+                                <p class="dark-grey-text ml-5">&#10062; Ответ: {{ a.title }}</p>
+                              {% endif %}
+                            {% endfor %}    
+                          {% endif %}
+                        {% endfor %}
+                      {% endfor %}
+                    {% endif %}
+                  {% endfor %}
+                  <hr>
+                {% endfor %}
+              </div>
+            </div>
+          {% else %}
+            <div class="alert alert-danger text-center mb-5" role="alert">Не пройдено ни одного опроса. Для получения статистики завершите хотя бы один опрос.</div>
+          {% endif %}
+        {% else %}
+          <div class="media">
+            <div class="media-body">
+              <h2 class="text-muted text-center">Опросы ещё не созданы.</h2>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

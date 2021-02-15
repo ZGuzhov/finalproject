@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_title %}Список опросов.{% endblock %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-md-center">
+      <div class="text-center">
+        <a type="button" class="btn btn-primary mx-1" href="/polls-list/all/">Все</a>
+        <a type="button" class="btn btn-info mx-1" href="/polls-list/available/">Доступные</a>
+        <a type="button" class="btn btn-success mx-1" href="/polls-list/checked/">Пройденные</a>
+        <a type="button" class="btn btn-warning mx-1" href="/polls-list/not-available/">Недоступные</a>
+      </div>
+    </div>
+  </div>
+  <div class="container my-5">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="text-center font-weight-bold mb-4">СПИСОК ОПРОСОВ</h5>
+        <hr>
+        <div class="row">
+          <div class="col-12 mb-3 mx-auto">
+            {% if polls %}
+              {% for poll in polls %}
+                <div class="media">
+                  <div class="media-body">
+                    {% if poll.public <= current_date %}
+                      {% if poll.id in checked_polls %}
+                        <h6 class="mt-1 font-weight-bold"><a href="/poll/{{ poll.id }}/top/">{{ poll.title }}</a><span class="badge badge-success float-right">Пройден</span></h6>
+                      {% else %}
+                        <h6 class="mt-1 font-weight-bold"><a href="/poll/{{ poll.id }}/top/">{{ poll.title }}</a><span class="badge badge-info float-right">Доступен</span></h6>
+                      {% endif %}
+                    {% else %}
+                      <h6 class="mt-1 font-weight-bold"><span class="text-primary">{{ poll.title }}</span><span class="badge badge-warning float-right">Недоступен</span></h6>
+                    {% endif %}
+                    <p class="text-muted">{{ poll.description }}</p>
+                    <p class="text-muted">Дата публикации: {{ poll.public }}
+                      {% if poll.id in checked_polls %}
+                        {% for key, value in poll_points.items %}
+                          {% if key == poll.id %}
+                            <span class="alert alert-success float-right py-1" role="alert">Набрано баллов: {{ value }}</span>
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    </p>
+                  </div>
+                </div>
+                <hr>
+              {% endfor %}
+            {% else %}
+              <div class="media">
+                <div class="media-body">
+                  <h2 class="text-muted text-center">Нет доступных опросов</h2>
+                </div>
+              </div>
+              <hr>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
